@@ -46,6 +46,7 @@ namespace ClientLandingPage.Controllers
                 var clientRequest = _map.Map<Models.Client>(clientVM);
                 _context.Add(clientRequest);
                 _context.SaveChanges();
+
                 
                 return Json(clientRequest);
             }
@@ -92,6 +93,23 @@ namespace ClientLandingPage.Controllers
             return Ok();
         }
 
+        //[HttpPost("name")]
+        //public IActionResult Trim(string name) {
+
+
+        //    string[] splittedName = name.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+
+        //    var initials = "";
+
+        //    foreach (var word in splittedName)
+        //    {
+        //        initials += word.Substring(0, 1).ToUpper();
+
+        //    }
+
+
+        //    return Ok(initials);
+        //}
         
     }
 }

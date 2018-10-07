@@ -21,6 +21,7 @@ namespace ClientLandingPage.ViewModels
         public string AdSource { get; set; }
         [Required]
         public string AdType { get; set; }
-        
+
+       // public IFormFile UploadFile { get; set; }
     }
 }
