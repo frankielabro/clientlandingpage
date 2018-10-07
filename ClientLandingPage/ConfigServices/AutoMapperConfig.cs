@@ -14,8 +14,8 @@ namespace ClientLandingPage.ConfigServices
     {
         public AutoMapperConfig()
         {
-            CreateMap<Client, ClientSubmitViewModel>().ReverseMap()
-                .ForMember(a => a.UploadFile, b => b.ResolveUsing(a => a.UploadFile.FileName));
+            CreateMap<Client, ClientSubmitViewModel>().ReverseMap();
+                //.ForMember(a => a.UploadFile, b => b.ResolveUsing(a => a.UploadFile.FileName));
         }
 
         private void AfterMap(Func<object, object, object> p)

@@ -18,12 +18,7 @@ namespace ClientLandingPage.Controllers
     [Route("Client")]
     public class ClientController : Controller
     {
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
+        
         private DataContext _context;
         private readonly IMapper _map;
         private readonly IConfiguration _configuration;
@@ -36,8 +31,8 @@ namespace ClientLandingPage.Controllers
         }
 
 
-        [HttpPost("submit")]
-        public IActionResult Submit(ClientSubmitViewModel clientVM)
+        [HttpPost("Submit")]
+        public IActionResult Submit([FromBody] ClientSubmitViewModel clientVM)
         {
             
             if (!ModelState.IsValid)
@@ -51,11 +46,27 @@ namespace ClientLandingPage.Controllers
                 var clientRequest = _map.Map<Models.Client>(clientVM);
                 _context.Add(clientRequest);
                 _context.SaveChanges();
+                
+                return Json(clientRequest);
+            }
+            catch (Exception ex)
+            {
 
+                throw ex;
+            }
+            
+        }
+
+        [HttpPut("Upload")]
+        public IActionResult UploadFile(ClientUploadFileViewModel clientVM)
+        {
+            try
+            {
                 if (clientVM.UploadFile == null || clientVM.UploadFile.Length == 0)
                     return Json(Content("file not selected"));
 
                 var dir = _configuration.GetSection("Directory:ClientUploadFile").Value;
+                var clientRequest = _context.Client.FirstOrDefault(c => c.ClientId == clientVM.ClientId);
 
                 var path = Path.Combine(dir, clientRequest.ClientId.ToString(), clientVM.UploadFile.FileName);
 
@@ -66,11 +77,10 @@ namespace ClientLandingPage.Controllers
                     clientVM.UploadFile.CopyTo(stream);
                 }
 
-                clientRequest.UploadFile = clientRequest.ClientId.ToString() + "/" + clientRequest.UploadFile;
+                clientRequest.UploadFile = clientRequest.ClientId.ToString() + "/" + clientVM.UploadFile.FileName;
+
                 _context.Update(clientRequest);
                 _context.SaveChanges();
-
-                return Json(StatusCode(201));
             }
             catch (Exception ex)
             {
@@ -78,8 +88,10 @@ namespace ClientLandingPage.Controllers
                 throw ex;
             }
 
-            
+
+            return Ok();
         }
+
         
     }
 }

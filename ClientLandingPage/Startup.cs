@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace ClientLandingPage
 {
@@ -31,6 +32,11 @@ namespace ClientLandingPage
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.RegisterMapper();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +50,24 @@ namespace ClientLandingPage
             {
                 app.UseHsts();
             }
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+
+                //Swagger for remote desktop
+                c.SwaggerEndpoint("/clientlandingpage/api/swagger/v1/swagger.json", "ClientLandingPage API v1");
+
+                //Swagger for local
+                //c.SwaggerEndpoint("/swagger/v1/swagger.json", "ClientLandingPage V1");
+
+                //Note: this must not have any slash before the routeprefix.
+                c.RoutePrefix = "docs/swagger";
+            });
 
             app.UseHttpsRedirection();
             app.UseMvc();
