@@ -17,7 +17,7 @@ namespace ClientLandingPage.ViewModels
         public string Email { get; set; }
         [Required]
         public string Phone { get; set; }
-        [Required]
+        
         public string AdSource { get; set; }
         [Required]
         public string AdType { get; set; }

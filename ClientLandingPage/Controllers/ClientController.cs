@@ -34,6 +34,7 @@ namespace ClientLandingPage.Controllers
         [HttpPost("Submit")]
         public IActionResult Submit([FromBody] ClientSubmitViewModel clientVM)
         {
+
             
             if (!ModelState.IsValid)
             {
@@ -42,21 +43,27 @@ namespace ClientLandingPage.Controllers
 
             try
             {
-                //adding to database
-                var clientRequest = _map.Map<Models.Client>(clientVM);
+                if (clientVM.AdSource == null) clientVM.AdSource = "default";
+                var clientRequest = _map?.Map<Models.Client>(clientVM);
                 _context.Add(clientRequest);
                 _context.SaveChanges();
 
-                
-                return Json(clientRequest);
+
+                return Json(new { ClientId = clientRequest.ClientId });
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
-            
+
         }
+
+        [HttpGet]
+        public IActionResult GetSomething()
+        {
+            return Json(Ok());
+        }
+
 
         [HttpPut("Upload")]
         public IActionResult UploadFile(ClientUploadFileViewModel clientVM)
@@ -66,10 +73,10 @@ namespace ClientLandingPage.Controllers
                 if (clientVM.UploadFile == null || clientVM.UploadFile.Length == 0)
                     return Json(Content("file not selected"));
 
-                var dir = _configuration.GetSection("Directory:ClientUploadFile").Value;
+                var dir = _configuration.GetSection("Directory:ClientUploadFile")?.Value;
                 var clientRequest = _context.Client.FirstOrDefault(c => c.ClientId == clientVM.ClientId);
 
-                var path = Path.Combine(dir, clientRequest.ClientId.ToString(), clientVM.UploadFile.FileName);
+                var path = Path.Combine(dir, clientRequest?.ClientId.ToString(), clientVM?.UploadFile?.FileName);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
 
@@ -78,7 +85,7 @@ namespace ClientLandingPage.Controllers
                     clientVM.UploadFile.CopyTo(stream);
                 }
 
-                clientRequest.UploadFile = clientRequest.ClientId.ToString() + "/" + clientVM.UploadFile.FileName;
+                clientRequest.UploadFile = clientRequest?.ClientId.ToString() + "/" + clientVM.UploadFile.FileName;
 
                 _context.Update(clientRequest);
                 _context.SaveChanges();

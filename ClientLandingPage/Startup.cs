@@ -60,7 +60,7 @@ namespace ClientLandingPage
             {
 
                 //Swagger for remote desktop
-                c.SwaggerEndpoint("/clientlandingpage/api/swagger/v1/swagger.json", "ClientLandingPage API v1");
+                c.SwaggerEndpoint("/lp/api/swagger/v1/swagger.json", "ClientLandingPage API v1");
 
                 //Swagger for local
                 //c.SwaggerEndpoint("/swagger/v1/swagger.json", "ClientLandingPage V1");
